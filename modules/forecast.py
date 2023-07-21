@@ -478,9 +478,14 @@ def forecast_etf(list_etf, invested_amount, type_investment, years_maintained):
     
     # sort the columns in the data frame
     df_final_full_std_by_year = df_final_full_std_by_year[list_cols]
+    df_final_full_std_by_year_percentage_only = df_final_full_std_by_year.copy()
+
+    df_final_full_std_by_year_percentage_only
+
+    df_final_full_std_by_year_percentage_only = df_final_full_std_by_year_percentage_only.filter(like='%')
+
     
-    
-    return df_final_full_std_by_year, df_final_return_by_active_T, invested_amount_money_of_each_ticker, df_final_full_std_by_year_for_plot
+    return df_final_full_std_by_year, df_final_return_by_active_T, invested_amount_money_of_each_ticker, df_final_full_std_by_year_for_plot, df_final_full_std_by_year_percentage_only
     
     
     

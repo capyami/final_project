@@ -30,9 +30,9 @@ def ratings_etf(list_etf):
     driver.find_element(By.XPATH, '//button[@title="Scroll to the bottom of the text below to enable this button"]').click()
     time.sleep(random.uniform(4.28, 6.52))
     
-    valuation_ratings = pd.DataFrame(columns=['Outperform','Analyst_consensus', 'Buy', 'Hold', 'Sell', 'Highest_price_target','Average_price_target','Lowest_price_target'])
+    valuation_ratings = pd.DataFrame(columns=['Grade','Consensus', 'Buy', 'Hold', 'Sell', 'Highest_target','Average_target','Lowest_target'])
         
-    technic_ratings = pd.DataFrame(columns=['Blogger_sentiment','Hedge_Fund_Trend','Crowd_Wisdom','News_Sentiment','Technical_SMA','Technical_Momentum'])
+    technic_ratings = pd.DataFrame(columns=['Blogger_sentiment','Hedge_Fund_Trend','Crowd_Wisdom','News_Sentiment','SMA','Momentum'])
         
     etf_description = pd.DataFrame(columns=['ETF_description'])
     
@@ -171,79 +171,7 @@ def ratings_etf(list_etf):
             Technical_SMA = ' '
             Technical_Momentum = ' '
 
-        """if len(button_ratings2) == 15:
-            try:
-                Outperform = button_outperform.text
-            except NoSuchElementException:
-                Outperform = ' '
-            try:
-                Analyst_consensus = button_ratings2[4].text
-            except NoSuchElementException:
-                Analyst_consensus = ' '
-            try:
-                Average_Price_Target = button_ratings1[0].text
-            except NoSuchElementException:
-                Average_Price_Target = ' '
-            try:
-                Blogger_Sentiment = button_ratings2[5].text
-            except NoSuchElementException:
-                Blogger_Sentiment = ' '
-            try:
-                Hedge_Fund_Trend = button_ratings2[6].text
-            except NoSuchElementException:
-                Hedge_Fund_Trend = ' '
-            try:
-                Crowd_Wisdom = button_ratings2[7].text
-            except NoSuchElementException:
-                Crowd_Wisdom = ' '
-            try:
-                News_Sentiment = button_ratings2[8].text
-            except NoSuchElementException:
-                News_Sentiment = ' '    
-            try:
-                Technical_SMA = button_ratings2[9].text
-            except NoSuchElementException:
-                Technical_SMA = ' '
-            try:
-                Technical_Momentum = button_ratings2[10].text
-            except NoSuchElementException:
-                Technical_Momentum = ' '
-            
-        else:
-            try:
-                Outperform = button_outperform.text
-            except NoSuchElementException:
-                Outperform = ' '
-            try:
-                Analyst_consensus = button_ratings2[4].text
-            except NoSuchElementException:
-                Analyst_consensus = ' '
-            try:
-                Average_Price_Target = button_ratings1[0].text
-            except NoSuchElementException:
-                Average_Price_Target = ' '
-            try:
-                Blogger_Sentiment = button_ratings2[5].text
-            except NoSuchElementException:
-                Blogger_Sentiment = ' '
-            try:
-                Hedge_Fund_Trend = button_ratings2[6].text
-            except NoSuchElementException:
-                Hedge_Fund_Trend = ' '
-            try:
-                Crowd_Wisdom = button_ratings2[7].text
-            except NoSuchElementException:
-                Crowd_Wisdom = ' '
-            News_Sentiment = ' '
-                
-            try:
-                Technical_SMA = button_ratings2[-6].text
-            except NoSuchElementException:
-                Technical_SMA = ' '
-            try:
-                Technical_Momentum = button_ratings2[-5].text
-            except NoSuchElementException:
-                Technical_Momentum = ' '"""
+
             
         etf_description_text = driver.find_element(By.XPATH, '//div[@class="px4"]')
         etf_description_text = etf_description_text.text
@@ -298,6 +226,27 @@ def ratings_etf(list_etf):
         technic_ratings.loc[ticker] = [Blogger_Sentiment, Hedge_Fund_Trend, Crowd_Wisdom, News_Sentiment, Technical_SMA, Technical_Momentum]
     
         etf_description.loc[ticker] = [etf_description_text]
-    
-    return valuation_ratings, technic_ratings, etf_description
+
+        valuation_ratings_bhs = valuation_ratings.copy()
+        valuation_ratings_bhs = valuation_ratings_bhs[['Buy', 'Hold', 'Sell']]
+
+        valuation_ratings_bhs['Buy'] = valuation_ratings_bhs['Buy'].apply(lambda x: x.replace('%', ''))
+        valuation_ratings_bhs['Hold'] = valuation_ratings_bhs['Hold'].apply(lambda x: x.replace('%', ''))
+        valuation_ratings_bhs['Sell'] = valuation_ratings_bhs['Sell'].apply(lambda x: x.replace('%', ''))
+
+        valuation_ratings_bhs[['Buy', 'Hold', 'Sell']] = valuation_ratings_bhs[['Buy', 'Hold', 'Sell']].astype(float)
+
+        mean_bhs = valuation_ratings_bhs.mean()
+        mean_bhs = pd.DataFrame(mean_bhs)
+       
+        grade_analysts = valuation_ratings.copy()
+        
+        sum_outperform = []
+        for i in range(len(grade_analysts)):
+            sum_outperform.append(float(valuation_ratings.iloc[i][0]))
+        grade_analysts = sum(sum_outperform)/len(grade_analysts)
+        grade_analysts = round(grade_analysts, 2)
+        grade_analysts 
+
+    return valuation_ratings, technic_ratings, etf_description, mean_bhs, grade_analysts
     

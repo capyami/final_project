@@ -47,7 +47,7 @@ def info_etf(list_etf):
     
     time.sleep(random.uniform(2.08, 3.1))
     
-    basic_info = pd.DataFrame(columns=['Name','Category','expense_ratio','inception_date', 'summary'])
+    basic_info = pd.DataFrame(columns=['Price', 'Name','Category','expense_ratio','inception_date', 'summary'])
     
     technic_info = pd.DataFrame(columns=['P/E','PER', 'alpha','beta','Mean_Annual_Return','Standard_Deviation','R-Squared','Sharpe_Ratio','Treynor_Ratio'])
     
@@ -129,7 +129,8 @@ def info_etf(list_etf):
         
         # top_holdings_all_ticker7
         
-        
+        price_ticker = driver.find_element(By.XPATH, '//td[@class="Ta(end) Fw(600) Lh(14px)"]').text
+
         
         top_holdings_percentage_ticker = driver.find_elements(By.XPATH, '//td[@class=""]')
         try:
@@ -304,8 +305,8 @@ def info_etf(list_etf):
 
         
         
-        basic_info.loc[ticker] = name_ticker,category_ticker,expense_ratio_ticker, fund_inception_date_ticker, summary_ticker
-        technic_info.loc[ticker] = PE_ticker,per_ticker,alpha_ticker, alpha_ticker, mean_annual_return_ticker, std_deviation_ticker, r_squared_ticker, sharpe_ratio_ticker, treynor_ratio_ticker
+        basic_info.loc[ticker] = price_ticker, name_ticker, category_ticker,expense_ratio_ticker, fund_inception_date_ticker, summary_ticker
+        technic_info.loc[ticker] = PE_ticker, per_ticker, alpha_ticker, alpha_ticker, mean_annual_return_ticker, std_deviation_ticker, r_squared_ticker, sharpe_ratio_ticker, treynor_ratio_ticker
         asset_info.loc[ticker] = stocks_ticker, sector_stocks_ticker, bonds_ticker, class_bonds_ticker
         list_for_list_top_holdings_all_ticker = []
         if len(list_top_holdings_all_ticker) >= 10:
